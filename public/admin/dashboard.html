@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Japan Link Motors LTD MSA</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="icon" href="/images/logo.jpg">
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+</head>
+<body class="admin-body">
+<div class="admin-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="/images/logo.jpg" alt="JLM">
+      <span>JLM Admin</span>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="dashboard">
+        <span class="nav-icon">&#9783;</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-tab="cars">
+        <span class="nav-icon">&#128663;</span>
+        <span>Cars</span>
+      </button>
+      <button class="nav-item" data-tab="inbox">
+        <span class="nav-icon">&#128231;</span>
+        <span>Inbox</span>
+      </button>
+      <button class="nav-item" data-tab="sales">
+        <span class="nav-icon">&#128176;</span>
+        <span>Sales</span>
+      </button>
+      <button class="nav-item" data-tab="reviews">
+        <span class="nav-icon">&#9733;</span>
+        <span>Reviews</span>
+      </button>
+      <button class="nav-item" data-tab="tradeins">
+        <span class="nav-icon">&#128260;</span>
+        <span>Trade-Ins</span>
+      </button>
+      <button class="nav-item" data-tab="customers">
+        <span class="nav-icon">&#128101;</span>
+        <span>Customers</span>
+      </button>
+      <button class="nav-item" data-tab="media">
+        <span class="nav-icon">&#128247;</span>
+        <span>Media</span>
+      </button>
+      <button class="nav-item" data-tab="blog">
+        <span class="nav-icon">&#128240;</span>
+        <span>Blog</span>
+      </button>
+      <button class="nav-item" data-tab="activity">
+        <span class="nav-icon">&#128337;</span>
+        <span>Activity</span>
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <span class="nav-icon">&#9881;</span>
+        <span>Settings</span>
+      </button>
+      <button class="nav-item" data-tab="profile">
+        <span class="nav-icon">&#127968;</span>
+        <span>Profile</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="sidebar-toggle-btn" id="sidebarToggle">
+        <span class="nav-icon">&#9776;</span>
+        <span>Collapse</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- HEADER -->
+  <header class="admin-header" id="adminHeader">
+    <div class="header-left">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="header-search">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="globalSearch" placeholder="Search anything..." autocomplete="off">
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" id="darkModeToggle" title="Toggle dark mode">
+        &#127769;
+      </button>
+      <button class="header-btn" title="Notifications">
+        &#128276;
+        <span class="notif-badge"></span>
+      </button>
+      <div class="admin-profile" id="profileToggle">
+        <div class="admin-avatar">AD</div>
+        <span class="admin-name">Admin</span>
+        <span class="admin-chevron">&#9660;</span>
+        <div class="admin-profile-dropdown" id="profileDropdown">
+          <a href="../index.html" target="_blank">View Site</a>
+          <div class="dropdown-divider"></div>
+          <button id="logoutBtn">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="page-header-admin">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Overview of your dealership performance</p>
+        </div>
+        <span style="font-size:0.82rem;color:var(--admin-text-secondary);" id="lastUpdated"></span>
+      </div>
+      <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon blue">&#128663;</div><span class="kpi-change up">+2</span></div><div class="kpi-value" id="kpiCars">-</div><div class="kpi-label">Total Cars</div></div>
+        <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon green">&#128176;</div><span class="kpi-change up">+12%</span></div><div class="kpi-value" id="kpiRevenue">-</div><div class="kpi-label">Revenue (This Month)</div></div>
+        <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon amber">&#128101;</div><span class="kpi-change up">+5</span></div><div class="kpi-value" id="kpiLeads">-</div><div class="kpi-label">Active Leads</div></div>
+        <div class="kpi-card"><div class="kpi-header"><div class="kpi-icon red">&#128230;</div><span class="kpi-change up">+8%</span></div><div class="kpi-value" id="kpiSales">-</div><div class="kpi-label">Sales (This Month)</div></div>
+      </div>
+      <div class="dashboard-grid">
+        <div class="chart-card">
+          <h3>Sales Trend</h3>
+          <p class="chart-sub">Monthly sales volume over the last 6 months</p>
+          <div class="chart-container"><canvas id="salesChart"></canvas></div>
+        </div>
+        <div class="activity-card">
+          <h3>Recent Activity</h3>
+          <div class="activity-list" id="activityList">
+            <div style="color:var(--admin-text-secondary);font-size:0.85rem;padding:20px 0;text-align:center;">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARS TAB -->
+    <div class="tab-content" id="tab-cars">
+      <div class="page-header-admin">
+        <div>
+          <h1>Inventory Management</h1>
+          <p>Manage your vehicle stock — view, filter, add, edit, and export</p>
+        </div>
+      </div>
+
+      <!-- Control Bar -->
+      <div class="inv-control-bar">
+        <div class="inv-search-wrap">
+          <span class="inv-search-icon">&#128269;</span>
+          <input type="text" id="invSearch" placeholder="Search by VIN, Make, Model..." oninput="debounceSearch()">
+        </div>
+        <div class="inv-control-actions">
+          <button class="btn-admin btn-admin-outline btn-admin-sm" onclick="exportCSV()">&#8595; Export CSV</button>
+          <div class="inv-view-toggle" id="invViewToggle">
+            <button class="view-btn active" data-view="table" onclick="setInventoryView('table')" title="Table View">&#9776;</button>
+            <button class="view-btn" data-view="grid" onclick="setInventoryView('grid')" title="Grid View">&#9638;</button>
+          </div>
+          <button class="btn-admin btn-admin-primary" id="addCarBtn" onclick="openAddVehicle()">+ Add New Vehicle</button>
+        </div>
+      </div>
+
+      <div class="inv-layout">
+        <!-- Filter Sidebar -->
+        <aside class="inv-filter-sidebar" id="invFilterSidebar">
+          <h3 class="filter-title">Filters</h3>
+          <button class="filter-clear-all" onclick="clearAllFilters()">Clear all</button>
+
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <div class="filter-chips" id="filterStatus">
+              <button class="chip active" data-value="all" onclick="toggleFilter('status','all')">All</button>
+              <button class="chip" data-value="available" onclick="toggleFilter('status','available')">Available</button>
+              <button class="chip" data-value="pending" onclick="toggleFilter('status','pending')">Pending</button>
+              <button class="chip" data-value="sold" onclick="toggleFilter('status','sold')">Sold</button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Condition</label>
+            <div class="filter-chips" id="filterCondition">
+              <button class="chip active" data-value="all" onclick="toggleFilter('condition','all')">All</button>
+              <button class="chip" data-value="New" onclick="toggleFilter('condition','New')">New</button>
+              <button class="chip" data-value="Used" onclick="toggleFilter('condition','Used')">Used</button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Make</label>
+            <select id="filterMake" onchange="onFilterChange()">
+              <option value="all">All Makes</option>
+              <option value="Toyota">Toyota</option>
+              <option value="Nissan">Nissan</option>
+              <option value="Mazda">Mazda</option>
+              <option value="Volkswagen">Volkswagen</option>
+              <option value="Volvo">Volvo</option>
+              <option value="Honda">Honda</option>
+              <option value="Subaru">Subaru</option>
+              <option value="BMW">BMW</option>
+              <option value="Mercedes">Mercedes</option>
+              <option value="Suzuki">Suzuki</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Year Range</label>
+            <div class="filter-range">
+              <select id="filterYearFrom" onchange="onFilterChange()">
+                <option value="">From</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2010">2010</option>
+                <option value="2005">2005</option>
+                <option value="2000">2000</option>
+              </select>
+              <span class="range-sep">to</span>
+              <select id="filterYearTo" onchange="onFilterChange()">
+                <option value="">To</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2010">2010</option>
+                <option value="2005">2005</option>
+                <option value="2000">2000</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Price Range (KES)</label>
+            <div class="filter-range">
+              <select id="filterPriceFrom" onchange="onFilterChange()">
+                <option value="">Min</option>
+                <option value="500000">500K</option>
+                <option value="1000000">1M</option>
+                <option value="2000000">2M</option>
+                <option value="3000000">3M</option>
+                <option value="5000000">5M</option>
+                <option value="7000000">7M</option>
+                <option value="10000000">10M</option>
+              </select>
+              <span class="range-sep">to</span>
+              <select id="filterPriceTo" onchange="onFilterChange()">
+                <option value="">Max</option>
+                <option value="500000">500K</option>
+                <option value="1000000">1M</option>
+                <option value="2000000">2M</option>
+                <option value="3000000">3M</option>
+                <option value="5000000">5M</option>
+                <option value="7000000">7M</option>
+                <option value="10000000">10M</option>
+                <option value="20000000">20M</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filter-active-tags" id="filterActiveTags"></div>
+        </aside>
+
+        <!-- Results -->
+        <div class="inv-results">
+          <div class="inv-stats-bar" id="invStatsBar">
+            <span id="invResultsCount">Showing 0 vehicles</span>
+            <span class="inv-sort-group">
+              <label>Sort:</label>
+              <select id="invSort" onchange="renderInventory()">
+                <option value="year_desc">Year (Newest)</option>
+                <option value="year_asc">Year (Oldest)</option>
+                <option value="price_desc">Price (High-Low)</option>
+                <option value="price_asc">Price (Low-High)</option>
+                <option value="mileage_asc">Mileage (Low-High)</option>
+                <option value="mileage_desc">Mileage (High-Low)</option>
+              </select>
+            </span>
+          </div>
+
+          <!-- Table View -->
+          <div class="inv-view-panel active" id="invTableView">
+            <div class="table-scroll">
+              <table class="admin-table inv-table">
+                <thead>
+                  <tr>
+                    <th style="width:60px;cursor:default;">Image</th>
+                    <th onclick="sortInventory('name')">Vehicle <span class="sort-icon">&#9650;</span></th>
+                    <th onclick="sortInventory('vin')">VIN <span class="sort-icon">&#9650;</span></th>
+                    <th onclick="sortInventory('stockNumber')">Stock # <span class="sort-icon">&#9650;</span></th>
+                    <th onclick="sortInventory('mileage')">Mileage <span class="sort-icon">&#9650;</span></th>
+                    <th onclick="sortInventory('price')">Retail Price <span class="sort-icon">&#9650;</span></th>
+                    <th onclick="sortInventory('status')" style="width:100px;">Status <span class="sort-icon">&#9650;</span></th>
+                    <th style="width:60px;cursor:default;"></th>
+                  </tr>
+                </thead>
+                <tbody id="invTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Grid View -->
+          <div class="inv-view-panel" id="invGridView">
+            <div class="inv-grid" id="invGrid"></div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="table-pagination" id="invPagination">
+            <div class="pagination-info" id="invPageInfo">Showing 0-0 of 0</div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <select class="per-page-select" id="invPerPage" onchange="renderInventory()">
+                <option value="10">10 / page</option>
+                <option value="25">25 / page</option>
+                <option value="50">50 / page</option>
+              </select>
+              <div class="pagination-btns" id="invPageBtns"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INBOX TAB -->
+    <div class="tab-content" id="tab-inbox">
+      <div class="inbox-wrap">
+        <!-- Left Pane: Message List -->
+        <div class="inbox-list" id="inboxList">
+          <div class="inbox-list-header">
+            <h2>Inbox</h2>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="inbox-count" id="inboxCount">0</span>
+              <button class="btn-admin btn-admin-outline btn-admin-xs" onclick="exportTableCSV('inboxItems','inquiries',['Name','Subject','Message','Date'])">&#8595; CSV</button>
+            </div>
+          </div>
+          <div class="inbox-search">
+            <span class="inbox-search-icon">&#128269;</span>
+            <input type="text" id="inboxSearch" placeholder="Search by name, email, or keyword..." oninput="onInboxSearch()">
+          </div>
+          <div class="inbox-filter-row" id="inboxFilterRow">
+            <button class="inbox-filter-btn active" data-type="all" onclick="filterInboxByType('all')">All</button>
+            <button class="inbox-filter-btn" data-type="Test Drive" onclick="filterInboxByType('Test Drive')">Test Drive</button>
+            <button class="inbox-filter-btn" data-type="General Inquiry" onclick="filterInboxByType('General Inquiry')">General</button>
+            <button class="inbox-filter-btn" data-type="Finance Question" onclick="filterInboxByType('Finance Question')">Finance</button>
+            <button class="inbox-filter-btn" data-type="Service Request" onclick="filterInboxByType('Service Request')">Service</button>
+            <button class="inbox-filter-btn" data-type="Complaint" onclick="filterInboxByType('Complaint')">Complaint</button>
+          </div>
+          <div class="inbox-items" id="inboxItems"></div>
+        </div>
+
+        <!-- Right Pane: Message Detail -->
+        <div class="inbox-detail" id="inboxDetail">
+          <div class="inbox-detail-empty" id="inboxDetailEmpty">
+            <div class="inbox-detail-empty-icon">&#128231;</div>
+            <h3>Select a message</h3>
+            <p>Choose a message from the left to view its details and take action.</p>
+          </div>
+          <div class="inbox-detail-content" id="inboxDetailContent" style="display:none;">
+            <div class="inbox-detail-header">
+              <button class="inbox-back-btn" id="inboxBackBtn" onclick="closeInboxDetail()">&#8592; Back</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn-admin btn-admin-sm btn-admin-outline" onclick="replyViaEmail()">&#9993; Reply</button>
+                <button class="btn-admin btn-admin-sm btn-admin-success" onclick="markResolved()">&#10003; Resolved</button>
+                <button class="btn-admin btn-admin-sm btn-admin-primary" onclick="convertToLead()">&#128101; Convert</button>
+                <button class="btn-admin btn-admin-sm btn-admin-danger" onclick="deleteContact()">&#128465; Delete</button>
+              </div>
+            </div>
+            <div class="inbox-detail-body" id="inboxDetailBody"></div>
+            <div class="inbox-quick-reply">
+              <textarea id="inboxQuickReply" placeholder="Type a quick reply or internal note..." rows="3"></textarea>
+              <div class="inbox-quick-reply-actions">
+                <button class="btn-admin btn-admin-primary btn-admin-sm" onclick="saveQuickReply()">Send / Save Note</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES TAB -->
+    <div class="tab-content" id="tab-sales">
+      <div class="admin-toolbar">
+        <h2>Sales &amp; Financing</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="table-wrap">
+          <div class="table-header-toolbar"><h2 style="font-size:1rem;">Recent Transactions</h2></div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Customer</th><th>Vehicle</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody id="transactionsBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header-toolbar"><h2 style="font-size:1rem;">Financing Applications</h2></div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Customer</th><th>Vehicle</th><th>Loan</th><th>Status</th></tr></thead>
+              <tbody id="financingBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div class="tab-content" id="tab-reviews">
+      <div class="admin-toolbar">
+        <h2>Customer Reviews</h2>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:0.82rem;color:var(--admin-text-secondary);" id="reviewsCount">0 total</span>
+          <button class="btn-admin btn-admin-primary btn-admin-sm" onclick="openAddReview()">+ Add Review</button>
+          <button class="btn-admin btn-admin-outline btn-admin-sm" onclick="exportTableCSV('reviewsTable','reviews',['Date','Name','Rating','Message','Status'])">&#8595; CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="admin-table" id="reviewsTable">
+            <thead><tr><th>Date</th><th>Name</th><th>Rating</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="reviewsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRADE-INS TAB -->
+    <div class="tab-content" id="tab-tradeins">
+      <div class="admin-toolbar">
+        <h2>Trade-In Requests</h2>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:0.82rem;color:var(--admin-text-secondary);" id="tradeinsCount">0 total</span>
+          <button class="btn-admin btn-admin-outline btn-admin-sm" onclick="exportTableCSV('tradeinsTable','trade-ins',['Date','Name','Contact','Vehicle','Mileage','Condition'])">&#8595; CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="admin-table" id="tradeinsTable">
+                <thead><tr><th>Date</th><th>Name</th><th>Contact</th><th>Vehicle</th><th>Mileage</th><th>Condition</th><th>Actions</th></tr></thead>
+                <tbody id="tradeinsTableBody"></tbody>
+              </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOG TAB -->
+    <div class="tab-content" id="tab-blog">
+      <div class="page-header-admin">
+        <div>
+          <h1>Blog Management</h1>
+          <p>Create, edit, and manage blog posts</p>
+        </div>
+        <button class="btn-admin btn-admin-primary" onclick="openAddPost()">+ New Post</button>
+      </div>
+
+      <div class="blog-admin-toolbar">
+        <div class="inv-search-wrap" style="max-width:300px;">
+          <span class="inv-search-icon">&#128269;</span>
+          <input type="text" id="blogSearch" placeholder="Search posts..." oninput="debounceBlogSearch()">
+        </div>
+        <div>
+          <select id="blogFilterStatus" onchange="renderBlogList()">
+            <option value="all">All Posts</option>
+            <option value="published">Published</option>
+            <option value="draft">Drafts</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style="width:160px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="blogTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS TAB -->
+    <div class="tab-content" id="tab-customers">
+      <div class="page-header-admin">
+        <div>
+          <h1>Customer Management</h1>
+          <p>View and manage your customer database</p>
+        </div>
+        <button class="btn-admin btn-admin-primary" onclick="openAddCustomer()">+ Add Customer</button>
+      </div>
+      <div class="inv-control-bar" style="margin-bottom:16px;">
+        <div class="inv-search-wrap" style="max-width:350px;">
+          <span class="inv-search-icon">&#128269;</span>
+          <input type="text" id="customerSearch" placeholder="Search by name, email, or phone..." oninput="debounceCustomerSearch()">
+        </div>
+        <button class="btn-admin btn-admin-outline btn-admin-sm" onclick="exportCustomersCSV()">&#8595; Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Source</th><th>Date Added</th><th style="width:100px;">Actions</th></tr></thead>
+            <tbody id="customersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDIA TAB -->
+    <div class="tab-content" id="tab-media">
+      <div class="page-header-admin">
+        <div>
+          <h1>Media Library</h1>
+          <p>All uploaded images across the site</p>
+        </div>
+      </div>
+      <div class="media-grid" id="mediaGrid"></div>
+    </div>
+
+    <!-- ACTIVITY LOG TAB -->
+    <div class="tab-content" id="tab-activity">
+      <div class="page-header-admin">
+        <div>
+          <h1>Activity Log</h1>
+          <p>Track all administrative actions</p>
+        </div>
+        <button class="btn-admin btn-admin-danger btn-admin-sm" onclick="clearActivityLog()">Clear Log</button>
+      </div>
+      <div class="activity-log-list" id="activityLogList"></div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings">
+      <div class="page-header-admin">
+        <div>
+          <h1>Site Settings</h1>
+          <p>Manage site-wide configuration and SEO</p>
+        </div>
+        <button class="btn-admin btn-admin-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+      <div class="profile-card">
+        <h3 class="profile-card-title">General</h3>
+        <div class="form-group"><label>Site Name</label><input type="text" id="setSiteName"></div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Currency Code</label><input type="text" id="setCurrency" placeholder="KES"></div>
+          <div class="form-group"><label>Currency Symbol</label><input type="text" id="setCurrencySymbol" placeholder="KES"></div>
+        </div>
+      </div>
+      <div class="profile-card">
+        <h3 class="profile-card-title">SEO</h3>
+        <div class="form-group"><label>Meta Title</label><input type="text" id="setMetaTitle"></div>
+        <div class="form-group"><label>Meta Description</label><textarea id="setMetaDescription" rows="3"></textarea></div>
+      </div>
+      <div class="profile-card">
+        <h3 class="profile-card-title">Social Links</h3>
+        <div class="form-group"><label>WhatsApp URL</label><input type="text" id="setWhatsApp" placeholder="https://wa.me/254701007662"></div>
+        <div class="form-group"><label>Facebook URL</label><input type="text" id="setFacebook"></div>
+        <div class="form-group"><label>Instagram URL</label><input type="text" id="setInstagram"></div>
+        <div class="form-group"><label>TikTok URL</label><input type="text" id="setTikTok"></div>
+      </div>
+      <div class="profile-card">
+        <h3 class="profile-card-title">Email Templates</h3>
+        <div class="form-group"><label>Inquiry Confirmation</label><textarea id="setEmailInquiry" rows="3" placeholder="Thank you for your inquiry..."></textarea></div>
+        <div class="form-group"><label>Trade-In Confirmation</label><textarea id="setEmailTradein" rows="3" placeholder="Thank you for your trade-in request..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="tab-content" id="tab-profile">
+      <div class="page-header-admin">
+        <div>
+          <h1>Dealership Profile</h1>
+          <p>Manage your public-facing dealership information, about content, and team</p>
+        </div>
+      </div>
+
+      <div class="profile-sub-tabs">
+        <button class="profile-sub-tab active" data-subtab="general" onclick="switchProfileSubTab('general')">General Info</button>
+        <button class="profile-sub-tab" data-subtab="about" onclick="switchProfileSubTab('about')">About Us</button>
+        <button class="profile-sub-tab" data-subtab="team" onclick="switchProfileSubTab('team')">Team Members</button>
+      </div>
+
+      <!-- GENERAL INFO SUB-TAB -->
+      <div class="profile-sub-content active" id="subtab-general">
+        <div class="profile-card">
+          <h3 class="profile-card-title">Dealership Details</h3>
+          <div class="form-row-2">
+            <div class="form-group"><label>Dealership Name *</label><input type="text" id="profName" onchange="markProfileDirty()"></div>
+            <div class="form-group"><label>Contact Email *</label><input type="email" id="profEmail" onchange="markProfileDirty()"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group"><label>Primary Phone</label><input type="tel" id="profPhone" onchange="markProfileDirty()" inputmode="tel"></div>
+            <div class="form-group"><label>Secondary Phone</label><input type="tel" id="profPhone2" onchange="markProfileDirty()" inputmode="tel"></div>
+          </div>
+          <div class="form-group"><label>Physical Address</label><input type="text" id="profAddress" onchange="markProfileDirty()"></div>
+          <div class="form-group">
+            <label>Dealership Logo</label>
+            <div class="upload-zone" id="logoUploadZone" onclick="document.getElementById('profLogoInput').click()">
+              <img id="profLogoPreview" src="" alt="Logo preview" style="display:none;">
+              <div class="upload-zone-placeholder" id="logoPlaceholder">
+                <span class="upload-icon">&#128247;</span>
+                <p>Click to upload logo</p>
+              </div>
+              <input type="file" id="profLogoInput" accept="image/*" style="display:none;" onchange="uploadProfileLogo(this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <h3 class="profile-card-title">Business Hours</h3>
+          <div class="hours-grid" id="hoursGrid">
+            <div class="hours-header"><span>Day</span><span>Open</span><span>Close</span><span>Closed</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT US SUB-TAB -->
+      <div class="profile-sub-content" id="subtab-about">
+        <div class="profile-card">
+          <h3 class="profile-card-title">About Page Content</h3>
+          <div class="form-group"><label>Mission Statement</label><textarea id="profMission" rows="3" onchange="markProfileDirty()"></textarea></div>
+          <div class="form-group"><label>Vision Statement</label><textarea id="profVision" rows="3" onchange="markProfileDirty()"></textarea></div>
+          <div class="form-group">
+            <label>Main Content (WYSIWYG)</label>
+            <div id="aboutEditor" style="height:350px;"></div>
+          </div>
+        </div>
+        <div class="profile-card">
+          <h3 class="profile-card-title">Hero Image</h3>
+          <div class="upload-zone" id="aboutImageUploadZone" onclick="document.getElementById('profHeroInput').click()">
+            <img id="profHeroPreview" src="" alt="Hero preview" style="display:none;">
+            <div class="upload-zone-placeholder" id="heroPlaceholder">
+              <span class="upload-icon">&#128247;</span>
+              <p>Click to upload About page hero image</p>
+            </div>
+            <input type="file" id="profHeroInput" accept="image/*" style="display:none;" onchange="uploadProfileAboutImage(this)">
+          </div>
+        </div>
+      </div>
+
+      <!-- TEAM SUB-TAB -->
+      <div class="profile-sub-content" id="subtab-team">
+        <div class="admin-toolbar">
+          <h2>Team Members</h2>
+          <button class="btn-admin btn-admin-primary" onclick="openAddTeamMember()">+ Add Team Member</button>
+        </div>
+        <div class="team-grid" id="teamGrid"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- TEAM MEMBER MODAL -->
+<div class="modal-overlay" id="teamModal">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <h3 id="teamModalTitle">Add Team Member</h3>
+      <button class="modal-close-btn" onclick="closeTeamModal()">&times;</button>
+    </div>
+    <form id="teamForm">
+      <div class="modal-body">
+        <input type="hidden" id="teamMemberId">
+        <div class="form-group">
+          <label>Headshot</label>
+          <div class="upload-zone upload-zone-sm" id="teamImageZone" onclick="document.getElementById('teamImageInput').click()">
+            <img id="teamImagePreview" src="" alt="Preview" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px;">
+            <div class="upload-zone-placeholder" id="teamImagePlaceholder">
+              <span class="upload-icon">&#128247;</span>
+              <p>Upload photo</p>
+            </div>
+          </div>
+          <input type="file" id="teamImageInput" accept="image/*" style="display:none;" onchange="previewTeamImage(this)">
+        </div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="teamName" required></div>
+        <div class="form-group"><label>Title / Role *</label><input type="text" id="teamTitle" required></div>
+        <div class="form-group"><label>Short Bio</label><textarea id="teamBio" rows="3"></textarea></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-admin btn-admin-outline" onclick="closeTeamModal()">Cancel</button>
+        <button type="submit" class="btn-admin btn-admin-primary" id="saveTeamBtn">Save Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div class="modal-overlay" id="customerModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <h3 id="customerModalTitle">Add Customer</h3>
+      <button class="modal-close-btn" onclick="closeCustomerModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="customerId">
+      <div class="form-group"><label>Name *</label><input type="text" id="custName" required></div>
+      <div class="form-group"><label>Email</label><input type="email" id="custEmail"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" id="custPhone" inputmode="tel"></div>
+      <div class="form-group">
+        <label>Source</label>
+        <select id="custSource">
+          <option value="Manual">Manual</option>
+          <option value="Inquiry">Inquiry</option>
+          <option value="Trade-In">Trade-In</option>
+          <option value="Referral">Referral</option>
+          <option value="Website">Website</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="custNotes" rows="3"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-admin btn-admin-outline" onclick="closeCustomerModal()">Cancel</button>
+      <button class="btn-admin btn-admin-primary" onclick="saveCustomer()">Save Customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG POST DRAWER -->
+<div class="drawer-overlay" id="blogDrawerOverlay" onclick="closeBlogDrawer()"></div>
+<div class="drawer drawer-wide" id="blogDrawer">
+  <div class="drawer-header">
+    <h3 id="blogDrawerTitle">New Blog Post</h3>
+    <button class="drawer-close-btn" onclick="closeBlogDrawer()">&times;</button>
+  </div>
+  <div class="drawer-body">
+    <form id="blogPostForm">
+      <input type="hidden" id="blogPostId">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" id="blogPostTitle" placeholder="Post title" required>
+      </div>
+      <div class="form-group">
+        <label>Featured Image</label>
+        <input type="file" id="blogPostImage" accept="image/*" onchange="previewBlogImage(this)">
+        <div id="blogImagePreview" style="margin-top:8px;"></div>
+      </div>
+      <div class="form-group">
+        <label>Content *</label>
+        <div id="blogEditor" style="height:400px;"></div>
+      </div>
+      <div class="form-group">
+        <label>Excerpt (optional — auto-generated from content if blank)</label>
+        <textarea id="blogPostExcerpt" rows="3" placeholder="Short summary of the post..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" id="blogPostAuthor" placeholder="Admin" value="Admin">
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="blogPostPublished" checked>
+          Publish immediately
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="drawer-footer">
+    <button type="button" class="btn-admin btn-admin-outline" onclick="closeBlogDrawer()">Cancel</button>
+    <button type="button" class="btn-admin btn-admin-primary" id="saveBlogPostBtn" onclick="saveBlogPost()">Save Post</button>
+  </div>
+</div>
+
+<!-- REVIEW DRAWER -->
+<div class="drawer-overlay" id="reviewDrawerOverlay" onclick="closeReviewDrawer()"></div>
+<div class="drawer" id="reviewDrawer">
+  <div class="drawer-header">
+    <h3 id="reviewDrawerTitle">New Review</h3>
+    <button class="drawer-close-btn" onclick="closeReviewDrawer()">&times;</button>
+  </div>
+  <div class="drawer-body">
+    <form id="reviewForm">
+      <input type="hidden" id="reviewId">
+      <div class="form-group">
+        <label>Name *</label>
+        <input type="text" id="reviewName" placeholder="Customer name" required>
+      </div>
+      <div class="form-group">
+        <label>Rating *</label>
+        <select id="reviewRating" required>
+          <option value="">Select rating</option>
+          <option value="5">5 ★★★★★</option>
+          <option value="4">4 ★★★★☆</option>
+          <option value="3">3 ★★★☆☆</option>
+          <option value="2">2 ★★☆☆☆</option>
+          <option value="1">1 ★☆☆☆☆</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Review *</label>
+        <textarea id="reviewMessage" rows="4" placeholder="Write the review text..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="reviewApproved" checked>
+          Approved (visible on public website)
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="drawer-footer">
+    <button type="button" class="btn-admin btn-admin-outline" onclick="closeReviewDrawer()">Cancel</button>
+    <button type="button" class="btn-admin btn-admin-primary" id="saveReviewBtn" onclick="saveReview()">Save Review</button>
+  </div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="profile-save-bar" id="profileSaveBar" style="display:none;">
+  <div class="save-bar-inner">
+    <span class="save-bar-text">&#9888; You have unsaved changes</span>
+    <button class="btn-admin btn-admin-primary" onclick="saveProfile()">Save Changes</button>
+  </div>
+</div>
+
+<!-- VEHICLE DRAWER -->
+<div class="drawer-overlay" id="vehicleDrawerOverlay" onclick="closeVehicleDrawer()"></div>
+<div class="drawer" id="vehicleDrawer">
+  <div class="drawer-header">
+    <h3 id="drawerTitle">Add New Vehicle</h3>
+    <button class="drawer-close-btn" onclick="closeVehicleDrawer()">&times;</button>
+  </div>
+  <div class="drawer-body">
+    <form id="vehicleForm" enctype="multipart/form-data">
+      <input type="hidden" id="carId" name="carId">
+
+      <!-- Section 1: Basic Details -->
+      <div class="drawer-section">
+        <h4 class="drawer-section-title">Basic Details</h4>
+        <div class="form-row-2">
+          <div class="form-group"><label>VIN *</label><input type="text" id="carVin" placeholder="17-character VIN" required maxlength="17"></div>
+          <div class="form-group"><label>Stock Number</label><input type="text" id="carStockNumber" placeholder="e.g. STK-013"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label>Make *</label><input type="text" id="carMake" placeholder="e.g. Toyota" required></div>
+          <div class="form-group"><label>Model *</label><input type="text" id="carModel" placeholder="e.g. Prado" required></div>
+          <div class="form-group"><label>Year *</label><input type="number" id="carYear" min="2000" max="2030" required></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Condition</label>
+            <select id="carCondition">
+              <option value="Used">Used</option>
+              <option value="New">New</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Mileage (km)</label><input type="number" id="carMileage" min="0" placeholder="e.g. 45000"></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Specifications -->
+      <div class="drawer-section">
+        <h4 class="drawer-section-title">Specifications</h4>
+        <div class="form-row-2">
+          <div class="form-group"><label>Exterior Color</label><input type="text" id="carExteriorColor" placeholder="e.g. White"></div>
+          <div class="form-group"><label>Interior Color</label><input type="text" id="carInteriorColor" placeholder="e.g. Black"></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Body Style</label>
+            <select id="carBodyStyle">
+              <option value="SUV">SUV</option>
+              <option value="Hatchback">Hatchback</option>
+              <option value="Sedan">Sedan</option>
+              <option value="Station Wagon">Station Wagon</option>
+              <option value="Minivan">Minivan</option>
+              <option value="Pickup Truck">Pickup Truck</option>
+              <option value="Coupe">Coupe</option>
+              <option value="Convertible">Convertible</option>
+              <option value="Crossover">Crossover</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Engine</label><input type="text" id="carEngine" placeholder="e.g. 2.0L TDI"></div>
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label>Transmission</label>
+            <select id="carTransmission">
+              <option value="Automatic">Automatic</option>
+              <option value="Manual">Manual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Drivetrain</label>
+            <select id="carDrivetrain">
+              <option value="FWD">FWD</option>
+              <option value="RWD">RWD</option>
+              <option value="AWD">AWD</option>
+              <option value="4WD">4WD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fuel Type</label>
+            <select id="carFuel">
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Electric">Electric</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Pricing -->
+      <div class="drawer-section">
+        <h4 class="drawer-section-title">Pricing</h4>
+        <div class="form-row-2">
+          <div class="form-group"><label>Cost / Wholesale Price (KES)</label><input type="number" id="carCostPrice" min="0" placeholder="What you paid"></div>
+          <div class="form-group"><label>Retail Price (KES) *</label><input type="number" id="carPrice" min="0" placeholder="Selling price" required></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="carStatus">
+              <option value="available">Available</option>
+              <option value="pending">Pending / Reserved</option>
+              <option value="sold">Sold</option>
+            </select>
+          </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:8px;padding-top:24px;">
+            <input type="checkbox" id="carFeatured" style="width:auto;">
+            <label for="carFeatured" style="margin:0;cursor:pointer;">Featured on homepage</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Media Upload -->
+      <div class="drawer-section">
+        <h4 class="drawer-section-title">Media Upload</h4>
+        <div class="form-group">
+          <label>Vehicle Images</label>
+          <div class="file-drop-zone" id="fileDropZone">
+            <div class="drop-zone-content" id="dropZoneContent">
+              <span class="drop-icon">&#128247;</span>
+              <p>Drag & drop images here or click to browse</p>
+              <span class="drop-hint">Upload up to 10 images (JPEG, PNG, WebP)</span>
+            </div>
+            <input type="file" id="carImages" name="images" accept="image/*" multiple style="display:none;" onchange="handleFileSelect(this)">
+          </div>
+          <div class="image-preview-area" id="imagePreview"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="drawer-footer">
+    <button type="button" class="btn-admin btn-admin-outline" onclick="closeVehicleDrawer()">Cancel</button>
+    <button type="button" class="btn-admin btn-admin-primary" id="saveCarBtn" onclick="saveVehicle()">Save Vehicle</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="../js/admin.js"></script>
+</body>
+</html>

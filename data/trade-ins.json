@@ -1,0 +1,17 @@
+{
+  "tradeIns": [
+    {
+      "id": "5ffe635b-c6cc-4959-a2e3-f23cd6192c0b",
+      "name": "Test User",
+      "phone": "0712345678",
+      "email": "test@example.com",
+      "year": 2015,
+      "make": "Toyota",
+      "model": "Vitz",
+      "mileage": 80000,
+      "condition": "Good",
+      "notes": "",
+      "createdAt": "2026-06-21T15:23:21.182Z"
+    }
+  ]
+}

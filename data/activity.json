@@ -1,0 +1,94 @@
+{
+  "activities": [
+    {
+      "id": "79536265-d807-4a84-a791-93de2da3aa87",
+      "type": "review",
+      "text": "Review by <strong>James </strong> approved",
+      "time": "2026-06-22T06:09:28.506Z"
+    },
+    {
+      "id": "27c119b6-725a-44ce-98bf-de8e9a9ae8c9",
+      "type": "car",
+      "text": "<strong>2019 toyota prado</strong> added to inventory",
+      "time": "2026-06-22T06:05:14.213Z"
+    },
+    {
+      "id": "fe6c70f1-34f2-4888-966a-8ccb8091fb84",
+      "type": "review",
+      "text": "New review submitted by <strong>James </strong> (★★★★★)",
+      "time": "2026-06-21T18:54:14.718Z"
+    },
+    {
+      "id": "9a97b2f1-1316-4f97-b575-86e627d62f92",
+      "type": "lead",
+      "text": "New inquiry from <strong>Newsletter</strong> — Newsletter Signup",
+      "time": "2026-06-21T17:39:11.020Z"
+    },
+    {
+      "id": "75e3b06e-1641-4a8f-9de4-6d23ae72976f",
+      "type": "car",
+      "text": "<strong>2019 Volkswagen Golf TDI</strong> updated",
+      "time": "2026-06-21T17:37:48.192Z"
+    },
+    {
+      "id": "2073c6fe-7627-42a1-ae93-0302c1e32f2b",
+      "type": "tradein",
+      "text": "Trade-in request from <strong>Test</strong> — 2015 Toyota Vitz",
+      "time": "2026-06-21T15:25:45.120Z"
+    },
+    {
+      "id": "9db993f1-d922-4c5e-8aa0-abc6a83ee48f",
+      "type": "lead",
+      "text": "New inquiry from <strong>Test</strong> — General Inquiry",
+      "time": "2026-06-21T15:25:45.074Z"
+    },
+    {
+      "id": "d7eba788-06e0-4a20-bebc-c89873b925fb",
+      "type": "car",
+      "text": "<strong>2023 TestCrud TestModel</strong> deleted from inventory",
+      "time": "2026-06-21T15:25:45.060Z"
+    },
+    {
+      "id": "3a4dc205-2244-4d67-81ab-6b80d05d8283",
+      "type": "car",
+      "text": "<strong>2023 TestCrud TestModel</strong> updated",
+      "time": "2026-06-21T15:25:45.048Z"
+    },
+    {
+      "id": "7bdf7de2-1f8c-467a-8c0f-01589c639823",
+      "type": "car",
+      "text": "<strong>2023 TestCrud TestModel</strong> added to inventory",
+      "time": "2026-06-21T15:25:45.016Z"
+    },
+    {
+      "id": "98ecc77f-2b48-4882-8de2-7f5934da0f51",
+      "type": "tradein",
+      "text": "Trade-in request from <strong>Test User</strong> — 2015 Toyota Vitz",
+      "time": "2026-06-21T15:23:21.185Z"
+    },
+    {
+      "id": "3993c15b-98ca-4433-b752-5791ec5f883c",
+      "type": "lead",
+      "text": "New inquiry from <strong>Test User</strong> — General Inquiry",
+      "time": "2026-06-21T15:23:21.156Z"
+    },
+    {
+      "id": "22348932-6b27-4897-9ca1-1b29ba444d53",
+      "type": "car",
+      "text": "<strong>2023 TestMake TestModel</strong> deleted from inventory",
+      "time": "2026-06-21T15:19:36.110Z"
+    },
+    {
+      "id": "c48e2b89-97ac-40a7-bbdf-16287061d159",
+      "type": "car",
+      "text": "<strong>2023 TestMake TestModel</strong> updated",
+      "time": "2026-06-21T15:19:36.094Z"
+    },
+    {
+      "id": "1920f76f-28d6-4406-9c2b-cbbd1ff0c85a",
+      "type": "car",
+      "text": "<strong>2023 TestMake TestModel</strong> added to inventory",
+      "time": "2026-06-21T15:19:36.041Z"
+    }
+  ]
+}

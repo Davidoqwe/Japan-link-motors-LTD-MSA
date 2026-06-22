@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Japan Link Motors LTD MSA</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      padding: 20px;
+    }
+    .login-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-box .logo {
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .login-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      color: var(--dark);
+    }
+    .login-box p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+    .login-box .form-group {
+      text-align: left;
+    }
+    .login-box input {
+      background: var(--light);
+    }
+    .login-error {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      display: none;
+    }
+    .login-box .btn {
+      width: 100%;
+      justify-content: center;
+    }
+    .back-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    .back-link:hover {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-box">
+      <a href="../index.html" class="logo" style="margin-bottom:20px;">
+        <img src="/images/logo.jpg" alt="Japan Link Motors" style="height:40px;">
+      </a>
+      <h2>Admin Login</h2>
+      <p>Enter your password to manage inventory</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter admin password" required autofocus>
+        </div>
+        <div class="login-error" id="loginError">Incorrect password</div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+      </form>
+      <a href="../index.html" class="back-link">&#8592; Back to website</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      const error = document.getElementById('loginError');
+      const btn = e.target.querySelector('.btn');
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        if (res.ok) {
+          window.location.href = '/admin/dashboard.html';
+        } else {
+          error.style.display = 'block';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        }
+      } catch {
+        error.textContent = 'Connection error';
+        error.style.display = 'block';
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

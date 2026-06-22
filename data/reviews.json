@@ -1,0 +1,12 @@
+{
+  "reviews": [
+    {
+      "id": "d91076f4-a013-4b53-88ae-6da069798c2e",
+      "name": "James ",
+      "rating": 5,
+      "message": "⭐⭐⭐⭐⭐ 5/5 Stars\n\nI had an excellent experience purchasing my car from this dealership. The staff were friendly, professional, and very knowledgeable about the vehicles they had available. They took the time to answer all my questions and helped me find a car that fit both my needs and budget.\n\nThe entire buying process was smooth, transparent, and stress-free. I appreciated their honesty, fair pricing, and commitment to customer satisfaction. The vehicle was clean, well-maintained, and exactly as described.\n\nI would highly recommend this dealership to anyone looking for a reliable vehicle and outstanding customer service. I will definitely return for future purchases and recommend them to my friends and family.\n",
+      "approved": true,
+      "createdAt": "2026-06-21T18:54:14.707Z"
+    }
+  ]
+}

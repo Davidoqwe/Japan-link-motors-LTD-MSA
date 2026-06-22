@@ -1,0 +1,17 @@
+{
+  "siteName": "Japan Link Motors LTD MSA",
+  "metaTitle": "Test",
+  "metaDescription": "Test",
+  "currency": "KES",
+  "currencySymbol": "KES",
+  "socialLinks": {
+    "whatsapp": "https://wa.me/254701007662",
+    "facebook": "",
+    "instagram": "",
+    "tiktok": ""
+  },
+  "emailTemplates": {
+    "inquiryConfirmation": "Test",
+    "tradeInConfirmation": "Test"
+  }
+}

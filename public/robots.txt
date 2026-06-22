@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://japanlinkmotors.co.ke/sitemap.xml

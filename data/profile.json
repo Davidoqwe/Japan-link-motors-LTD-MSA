@@ -1,0 +1,90 @@
+{
+  "general": {
+    "name": "Japan Link Motors LTD MSA",
+    "email": "test@test.com",
+    "phone": "0712345678",
+    "phone2": "",
+    "address": "Test",
+    "logo": "/images/logo.jpg",
+    "hours": {
+      "Monday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Tuesday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Wednesday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Thursday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Friday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Saturday": {
+        "open": "08:00",
+        "close": "18:00",
+        "closed": false
+      },
+      "Sunday": {
+        "open": "09:00",
+        "close": "13:00",
+        "closed": true
+      }
+    }
+  },
+  "about": {
+    "heroImage": "",
+    "content": "<h2>Our Story</h2><p>Japan Link Motors LTD MSA has been serving the coastal region of Kenya since 2015. Founded with a passion for quality automobiles and a commitment to transparent business practices, we have grown into one of Mombasa's most trusted car dealerships.</p><p>We specialize in importing high-quality Japanese vehicles — from fuel-efficient hatchbacks to rugged SUVs and luxury sedans. Every car in our inventory undergoes a rigorous inspection process to ensure it meets our exacting standards before it reaches the showroom floor.</p><h2>Our Mission</h2><p>To provide every customer with a seamless, honest, and satisfying car-buying experience through quality vehicles, transparent pricing, and exceptional after-sales service.</p><h2>Why Choose Us</h2><ul><li>Direct imports from Japan with full documentation</li><li>Competitive pricing with no hidden fees</li><li>Professional after-sales support and warranty</li><li>Financing assistance through partner banks</li><li>Full NTSA registration and transfer handled for you</li></ul>",
+    "mission": "Test mission",
+    "vision": "To be the most trusted car dealership in the coastal region, known for integrity, quality, and customer-centric innovation."
+  },
+  "team": [
+    {
+      "id": "team-002",
+      "name": "Fatima Ali",
+      "title": "Sales Manager",
+      "bio": "Fatima leads our sales team with a customer-first approach. She has helped hundreds of customers find their perfect vehicle and specializes in matching buyers with the right financing options.",
+      "image": "/uploads/avatar-fa.svg"
+    },
+    {
+      "id": "team-003",
+      "name": "James Ochieng",
+      "title": "Senior Sales Consultant",
+      "bio": "James has been with Japan Link Motors for 6 years. His deep knowledge of Japanese vehicle specifications and market values makes him an invaluable resource for customers.",
+      "image": "/uploads/avatar-jo.svg"
+    },
+    {
+      "id": "team-004",
+      "name": "Mary Wanjiku",
+      "title": "Finance & Insurance Advisor",
+      "bio": "Mary handles all financing, insurance, and loan processing. She works closely with partner banks to secure the best rates for our customers.",
+      "image": "/uploads/avatar-mw.svg"
+    },
+    {
+      "id": "team-005",
+      "name": "Peter Kamau",
+      "title": "Service Manager",
+      "bio": "Peter manages our after-sales service center. With over 12 years of mechanical experience, he ensures every vehicle leaving our workshop is in top condition.",
+      "image": "/uploads/avatar-pk.svg"
+    },
+    {
+      "id": "team-006",
+      "name": "Aisha Mwinyi",
+      "title": "Customer Relations Officer",
+      "bio": "Aisha is the friendly voice you'll hear when you call or visit. She manages customer inquiries, test drive bookings, and ensures every visitor has a welcoming experience.",
+      "image": "/uploads/avatar-am.svg"
+    }
+  ]
+}
