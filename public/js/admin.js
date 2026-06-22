@@ -1419,7 +1419,10 @@ function renderSettingsPage() {
 
 async function loadSettings() {
   try {
-    const data = await apiFetch('/api/settings');
+    const [data, profile] = await Promise.all([
+      apiFetch('/api/settings'),
+      apiFetch('/api/profile')
+    ]);
     document.getElementById('setSiteName').value = data.siteName || '';
     document.getElementById('setCurrency').value = data.currency || 'KES';
     document.getElementById('setCurrencySymbol').value = data.currencySymbol || 'KES';
@@ -1431,6 +1434,10 @@ async function loadSettings() {
     document.getElementById('setTikTok').value = (data.socialLinks && data.socialLinks.tiktok) || '';
     document.getElementById('setEmailInquiry').value = (data.emailTemplates && data.emailTemplates.inquiryConfirmation) || '';
     document.getElementById('setEmailTradein').value = (data.emailTemplates && data.emailTemplates.tradeInConfirmation) || '';
+    const g = profile.general || {};
+    document.getElementById('setContactEmail').value = g.email || '';
+    document.getElementById('setContactPhone').value = g.phone || '';
+    document.getElementById('setContactPhone2').value = g.phone2 || '';
   } catch { showToast('Failed to load settings', 'error'); }
 }
 
@@ -1453,11 +1460,24 @@ async function saveSettings() {
     }
   };
   try {
-    const res = await fetch('/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    const [res] = await Promise.all([
+      fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }),
+      fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          general: {
+            email: document.getElementById('setContactEmail').value,
+            phone: document.getElementById('setContactPhone').value,
+            phone2: document.getElementById('setContactPhone2').value
+          }
+        })
+      })
+    ]);
     if (res.ok) { showToast('Settings saved', 'success'); }
     else { showToast('Failed to save', 'error'); }
   } catch { showToast('Connection error', 'error'); }
