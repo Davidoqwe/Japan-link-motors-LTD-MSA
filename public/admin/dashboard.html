@@ -565,38 +565,46 @@
       </div>
       <div class="profile-card">
         <h3 class="profile-card-title">General</h3>
-        <div class="form-group"><label>Site Name</label><input type="text" id="setSiteName"></div>
+        <div class="form-group"><label>Site Name</label><input type="text" id="setSiteName" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
         <div class="form-row-2">
-          <div class="form-group"><label>Currency Code</label><input type="text" id="setCurrency" placeholder="KES"></div>
-          <div class="form-group"><label>Currency Symbol</label><input type="text" id="setCurrencySymbol" placeholder="KES"></div>
+          <div class="form-group"><label>Currency Code</label><input type="text" id="setCurrency" placeholder="KES" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+          <div class="form-group"><label>Currency Symbol</label><input type="text" id="setCurrencySymbol" placeholder="KES" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
         </div>
       </div>
       <div class="profile-card">
         <h3 class="profile-card-title">SEO</h3>
-        <div class="form-group"><label>Meta Title</label><input type="text" id="setMetaTitle"></div>
-        <div class="form-group"><label>Meta Description</label><textarea id="setMetaDescription" rows="3"></textarea></div>
+        <div class="form-group"><label>Meta Title</label><input type="text" id="setMetaTitle" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+        <div class="form-group"><label>Meta Description</label><textarea id="setMetaDescription" rows="3" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></textarea></div>
       </div>
       <div class="profile-card">
         <h3 class="profile-card-title">Social Links</h3>
-        <div class="form-group"><label>WhatsApp URL</label><input type="text" id="setWhatsApp" placeholder="https://wa.me/254701007662"></div>
-        <div class="form-group"><label>Facebook URL</label><input type="text" id="setFacebook"></div>
-        <div class="form-group"><label>Instagram URL</label><input type="text" id="setInstagram"></div>
-        <div class="form-group"><label>TikTok URL</label><input type="text" id="setTikTok"></div>
+        <div class="form-group"><label>WhatsApp URL</label><input type="text" id="setWhatsApp" placeholder="https://wa.me/254701007662" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+        <div class="form-group"><label>Facebook URL</label><input type="text" id="setFacebook" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+        <div class="form-group"><label>Instagram URL</label><input type="text" id="setInstagram" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+        <div class="form-group"><label>TikTok URL</label><input type="text" id="setTikTok" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
       </div>
       <div class="profile-card">
         <h3 class="profile-card-title">Email Templates</h3>
-        <div class="form-group"><label>Inquiry Confirmation</label><textarea id="setEmailInquiry" rows="3" placeholder="Thank you for your inquiry..."></textarea></div>
-        <div class="form-group"><label>Trade-In Confirmation</label><textarea id="setEmailTradein" rows="3" placeholder="Thank you for your trade-in request..."></textarea></div>
+        <div class="form-group"><label>Inquiry Confirmation</label><textarea id="setEmailInquiry" rows="3" placeholder="Thank you for your inquiry..." onchange="markSettingsDirty()" oninput="markSettingsDirty()"></textarea></div>
+        <div class="form-group"><label>Trade-In Confirmation</label><textarea id="setEmailTradein" rows="3" placeholder="Thank you for your trade-in request..." onchange="markSettingsDirty()" oninput="markSettingsDirty()"></textarea></div>
       </div>
       <div class="profile-card">
         <h3 class="profile-card-title">Contact Information</h3>
         <div class="form-row-2">
-          <div class="form-group"><label>Contact Email</label><input type="email" id="setContactEmail"></div>
-          <div class="form-group"><label>Primary Phone</label><input type="tel" id="setContactPhone" inputmode="tel"></div>
+          <div class="form-group"><label>Contact Email</label><input type="email" id="setContactEmail" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+          <div class="form-group"><label>Primary Phone</label><input type="tel" id="setContactPhone" inputmode="tel" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
         </div>
         <div class="form-row-2">
-          <div class="form-group"><label>Secondary Phone</label><input type="tel" id="setContactPhone2" inputmode="tel"></div>
-          <div class="form-group"></div>
+          <div class="form-group"><label>Secondary Phone</label><input type="tel" id="setContactPhone2" inputmode="tel" onchange="markSettingsDirty()" oninput="markSettingsDirty()"></div>
+        </div>
+      </div>
+      <div class="profile-save-bar" id="settingsSaveBar" style="display:none;">
+        <div class="save-bar-inner">
+          <span class="save-bar-text">&#9881; You have unsaved settings changes</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-admin" onclick="saveSettings()">Save Settings</button>
+            <button class="btn-admin" onclick="loadSettings()">Discard</button>
+          </div>
         </div>
       </div>
     </div>

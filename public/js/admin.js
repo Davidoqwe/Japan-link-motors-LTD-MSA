@@ -17,6 +17,8 @@ let profileDirty = false;
 let profileSubTab = 'general';
 let quillEditor = null;
 
+let settingsDirty = false;
+
 let salesChartInstance = null;
 
 // Inventory state
@@ -93,6 +95,8 @@ function toggleProfileDropdown(e) {
 }
 
 function switchTab(tabName) {
+  if (profileDirty && !confirm('You have unsaved profile changes. Discard them?')) return;
+  if (settingsDirty && !confirm('You have unsaved settings changes. Discard them?')) return;
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById(`tab-${tabName}`).classList.add('active');
@@ -1414,7 +1418,16 @@ async function clearActivityLog() {
 
 // ─── SETTINGS ───────────────────────────────────────────────
 function renderSettingsPage() {
+  settingsDirty = false;
+  document.getElementById('settingsSaveBar').style.display = 'none';
   loadSettings();
+}
+
+function markSettingsDirty() {
+  if (!settingsDirty) {
+    settingsDirty = true;
+    document.getElementById('settingsSaveBar').style.display = 'block';
+  }
 }
 
 async function loadSettings() {
@@ -1438,6 +1451,8 @@ async function loadSettings() {
     document.getElementById('setContactEmail').value = g.email || '';
     document.getElementById('setContactPhone').value = g.phone || '';
     document.getElementById('setContactPhone2').value = g.phone2 || '';
+    settingsDirty = false;
+    document.getElementById('settingsSaveBar').style.display = 'none';
   } catch { showToast('Failed to load settings', 'error'); }
 }
 
@@ -1460,7 +1475,7 @@ async function saveSettings() {
     }
   };
   try {
-    const [res] = await Promise.all([
+    const [settingsRes, profileRes] = await Promise.all([
       fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -1478,8 +1493,14 @@ async function saveSettings() {
         })
       })
     ]);
-    if (res.ok) { showToast('Settings saved', 'success'); }
-    else { showToast('Failed to save', 'error'); }
+    if (!settingsRes.ok || !profileRes.ok) {
+      showToast('Failed to save settings', 'error');
+      return;
+    }
+    settingsDirty = false;
+    document.getElementById('settingsSaveBar').style.display = 'none';
+    showToast('Settings saved', 'success');
+    loadSettings();
   } catch { showToast('Connection error', 'error'); }
 }
 
