@@ -287,7 +287,7 @@ header .nav-cta:hover { background: var(--gold-dark); transform: translateY(-1px
   border: 1px solid var(--light-2); display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
 }
 .calc-inputs label { font-size: 0.8rem; font-weight: 600; color: var(--text); display: block; margin-bottom: 5px; }
-.calc-inputs input[type="range"] { width: 100%; margin: 10px 0; -webkit-appearance: none; height: 6px; background: var(--light-2); border-radius: 3px; }
+.calc-inputs input[type="range"] { width: 100%; margin: 10px 0; -webkit-appearance: none; appearance: none; height: 6px; background: var(--light-2); border-radius: 3px; }
 .calc-inputs input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); cursor: pointer; }
 .calc-inputs .range-val { font-family: var(--font-mono); font-size: 0.9rem; color: var(--navy); font-weight: 600; }
 .calc-result { display: flex; flex-direction: column; justify-content: center; }
