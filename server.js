@@ -192,7 +192,7 @@ app.put('/api/cars/:id', requireAdmin, upload.array('images', 10), (req, res) =>
   const existing = data.cars[idx];
   let images = existing.images;
   if (req.body.carExistingImages) {
-    try { images = JSON.parse(req.body.carExistingImages); } catch {}
+    try { images = typeof req.body.carExistingImages === 'string' ? JSON.parse(req.body.carExistingImages) : req.body.carExistingImages; } catch {}
   }
   if (req.files && req.files.length) {
     const newImgs = req.files.map(f => `/uploads/${f.filename}`);
@@ -572,7 +572,6 @@ app.get('/api/dashboard', requireAdmin, (req, res) => {
   const carsData = readCars();
   const inqData = readInquiries();
   const salesData = readSales();
-  const activityData = readActivity();
   const cars = carsData.cars || [];
   const inquiries = inqData.inquiries || [];
   const transactions = salesData.transactions || [];
@@ -614,7 +613,8 @@ app.get('/api/dashboard', requireAdmin, (req, res) => {
       monthRevenue,
       monthSales,
       activeLeads,
-      totalInquiries: inquiries.length
+      totalInquiries: inquiries.length,
+      unreadInquiries: inquiries.filter(i => !i.read).length
     },
     monthlySales,
     recentActivity
@@ -710,7 +710,7 @@ app.post('/api/posts', requireAdmin, upload.single('image'), (req, res) => {
   };
   data.posts.push(post);
   writePosts(data);
-  logActivity('car', `Blog post <strong>${post.title}</strong> ${post.published ? 'published' : 'saved as draft'}`);
+  logActivity('blog', `Blog post <strong>${post.title}</strong> ${post.published ? 'published' : 'saved as draft'}`);
   res.status(201).json({ post });
 });
 

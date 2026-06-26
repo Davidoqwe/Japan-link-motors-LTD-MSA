@@ -180,7 +180,7 @@ async function loadDashboard() {
 
     renderSalesChart(data.monthlySales || []);
     document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
-    const unread = data.kpis.totalInquiries - 0;
+    const unread = data.kpis.unreadInquiries || 0;
     const badge = document.querySelector('.notif-badge');
     if (badge) {
       badge.textContent = unread > 0 ? (unread > 99 ? '99+' : unread) : '';
@@ -1034,7 +1034,7 @@ function renderTradeInsTable() {
       <td>${formatDate(t.createdAt || t.date || new Date())}</td>
       <td>${t.name || 'Unknown'}</td>
       <td>${t.phone || t.email || '—'}</td>
-      <td>${t.vehicleMake || ''} ${t.vehicleModel || ''} (${t.vehicleYear || ''})</td>
+      <td>${t.make || ''} ${t.model || ''} (${t.year || ''})</td>
       <td>${t.mileage || '—'}</td>
       <td>${t.condition || '—'}</td>
       <td>
