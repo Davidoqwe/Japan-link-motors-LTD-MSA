@@ -525,6 +525,11 @@ function exportCSV() {
 
 function previewImages(input) {
   const area = document.getElementById('imagePreview');
+  const totalNew = input.files.length;
+  if (totalNew > 10) {
+    showToast('Maximum 10 images allowed. Only the first 10 will be saved.', 'error');
+    return;
+  }
   area.innerHTML = '';
   for (const f of input.files) {
     const reader = new FileReader();
@@ -553,7 +558,13 @@ function setupFileDropZone() {
     e.preventDefault();
     zone.classList.remove('dragover');
     if (e.dataTransfer.files.length) {
-      fileInput.files = e.dataTransfer.files;
+      const dt = new DataTransfer();
+      for (const f of fileInput.files) dt.items.add(f);
+      for (const f of e.dataTransfer.files) {
+        if (dt.items.length >= 10) break;
+        dt.items.add(f);
+      }
+      fileInput.files = dt.files;
       handleFileSelect(fileInput);
     }
   });
@@ -1592,6 +1603,7 @@ async function saveProfile() {
       hours: {}
     },
     about: {
+      heroImage: profileData?.about?.heroImage || '',
       mission: document.getElementById('profMission').value,
       vision: document.getElementById('profVision').value,
       content: quillEditor ? quillEditor.root.innerHTML : (profileData?.about?.content || '')

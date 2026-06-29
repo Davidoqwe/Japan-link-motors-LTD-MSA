@@ -67,6 +67,51 @@ function fetch(method, url, body, useCookie) {
   });
 }
 
+// Submit a multipart/form-data request (simulates admin form submission)
+function fetchMultipart(method, url, fields) {
+  const boundary = '----TestBoundary' + Date.now().toString(36);
+  const lines = [];
+  for (const [k, v] of Object.entries(fields)) {
+    lines.push(`--${boundary}`);
+    lines.push(`Content-Disposition: form-data; name="${k}"`);
+    lines.push('');
+    lines.push(String(v));
+  }
+  lines.push(`--${boundary}--`);
+  const body = lines.join('\r\n');
+
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': `multipart/form-data; boundary=${boundary}`,
+      'Content-Length': Buffer.byteLength(body)
+    }
+  };
+  if (cookieJar) opts.headers['Cookie'] = cookieJar;
+
+  return new Promise((resolve, reject) => {
+    const u = new URL(url, BASE);
+    const options = {
+      hostname: u.hostname,
+      port: u.port,
+      path: u.pathname + u.search,
+      method,
+      headers: opts.headers
+    };
+    const req = http.request(options, res => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        res.body = data;
+        resolve(res);
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
 async function waitForServer(retries = 10) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -431,6 +476,36 @@ async function main() {
 
   await test('DELETE /api/cars/:id removes car (admin)', async () => {
     const res = await fetch('DELETE', `/api/cars/${newCarId}`);
+    if (res.statusCode !== 200) throw new Error(`Expected 200, got ${res.statusCode}`);
+  });
+
+  // Car CRUD via multipart/form-data (simulates real admin form)
+  let mpCarId = '';
+  await test('POST /api/cars multipart creates car (admin)', async () => {
+    const res = await fetchMultipart('POST', '/api/cars', {
+      year: '2023', make: 'Suzuki', model: 'Swift', price: '1500000', mileage: '10000',
+      engine: '1.2L', transmission: 'Automatic', fuel: 'Petrol',
+      exteriorColor: 'Blue', bodyStyle: 'Hatchback', condition: 'New',
+      status: 'available', featured: 'true'
+    });
+    if (res.statusCode !== 201) throw new Error(`Expected 201, got ${res.statusCode}`);
+    mpCarId = JSON.parse(res.body).car.id;
+    const car = JSON.parse(res.body).car;
+    if (car.featured !== true) throw new Error('featured should be true');
+    if (car.make !== 'Suzuki') throw new Error('make mismatch');
+  });
+
+  await test('PUT /api/cars/:id multipart updates car (admin)', async () => {
+    const res = await fetchMultipart('PUT', `/api/cars/${mpCarId}`, {
+      price: '1450000', featured: 'false'
+    });
+    if (res.statusCode !== 200) throw new Error(`Expected 200, got ${res.statusCode}`);
+    const car = JSON.parse(res.body).car;
+    if (car.featured !== false) throw new Error('featured should be false');
+  });
+
+  await test('DELETE /api/cars/:id multipart removes car (admin)', async () => {
+    const res = await fetch('DELETE', `/api/cars/${mpCarId}`);
     if (res.statusCode !== 200) throw new Error(`Expected 200, got ${res.statusCode}`);
   });
 

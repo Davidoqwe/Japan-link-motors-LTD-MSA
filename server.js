@@ -16,6 +16,7 @@ const DATA_FILE = path.join(__dirname, 'data', 'cars.json');
 const INQ_FILE = path.join(__dirname, 'data', 'inquiries.json');
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const loginLimiter = rateLimit({
@@ -31,8 +32,11 @@ app.get('/car.html', (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, 'uploads'),
+  destination: uploadsDir,
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
@@ -49,6 +53,11 @@ const upload = multer({
   }
 });
 
+function ensureDir(fp) {
+  const dir = path.dirname(fp);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
+
 function readCars() {
   try {
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -56,6 +65,7 @@ function readCars() {
   } catch { return { cars: [] }; }
 }
 function writeCars(data) {
+  ensureDir(DATA_FILE);
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 function readInquiries() {
@@ -65,8 +75,11 @@ function readInquiries() {
   } catch { return { inquiries: [] }; }
 }
 function writeInquiries(data) {
+  ensureDir(INQ_FILE);
   fs.writeFileSync(INQ_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
 function requireAdmin(req, res, next) {
   if (req.cookies && req.cookies.admin_token === 'authenticated') return next();
   return res.status(401).json({ error: 'Unauthorized' });
@@ -100,9 +113,9 @@ app.get('/api/cars', (req, res) => {
     bodyStyle: c.bodyStyle || c.body || ''
   }));
 
-  // Filter: hide sold from public (unless admin requests all)
+  // Filter: hide sold/pending from public (unless admin requests all)
   const isAdmin = req.query.admin === 'true';
-  if (!isAdmin) cars = cars.filter(c => c.status !== 'sold');
+  if (!isAdmin) cars = cars.filter(c => c.status !== 'sold' && c.status !== 'pending');
 
   if (req.query.featured === 'true') cars = cars.filter(c => c.featured);
   if (req.query.make && req.query.make !== 'all') cars = cars.filter(c => c.make.toLowerCase() === req.query.make.toLowerCase());
@@ -151,9 +164,12 @@ app.get('/api/cars/:id', (req, res) => {
 
 app.post('/api/cars', requireAdmin, upload.array('images', 10), (req, res) => {
   const data = readCars();
-  const images = req.files && req.files.length
-    ? req.files.map(f => `/uploads/${f.filename}`)
-    : (req.body.images ? (Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images)) : []);
+  let images = [];
+  if (req.files && req.files.length) {
+    images = req.files.map(f => `/uploads/${f.filename}`);
+  } else if (req.body.images) {
+    try { images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images); } catch {}
+  }
   const car = {
     id: uuidv4(),
     images,
@@ -176,11 +192,11 @@ app.post('/api/cars', requireAdmin, upload.array('images', 10), (req, res) => {
     mileage: parseInt(req.body.mileage) || 0,
     price: parseInt(req.body.price) || 0,
     costPrice: parseInt(req.body.costPrice) || 0,
-    featured: req.body.featured === 'true' || req.body.featured === 'on'
+    featured: req.body.featured === 'true' || req.body.featured === 'on' || req.body.featured === true
   };
   data.cars.push(car);
   writeCars(data);
-  logActivity('car', `<strong>${car.year} ${car.make} ${car.model}</strong> added to inventory`);
+  logActivity('car', `<strong>${esc(car.year)} ${esc(car.make)} ${esc(car.model)}</strong> added to inventory`);
   res.status(201).json({ car });
 });
 
@@ -196,7 +212,7 @@ app.put('/api/cars/:id', requireAdmin, upload.array('images', 10), (req, res) =>
   }
   if (req.files && req.files.length) {
     const newImgs = req.files.map(f => `/uploads/${f.filename}`);
-    images = [...newImgs, ...images];
+    images = [...images, ...newImgs];
   }
 
   data.cars[idx] = {
@@ -215,19 +231,19 @@ app.put('/api/cars/:id', requireAdmin, upload.array('images', 10), (req, res) =>
     body: req.body.bodyStyle !== undefined ? req.body.bodyStyle : (req.body.body || existing.body || existing.bodyStyle),
     bodyStyle: req.body.bodyStyle !== undefined ? req.body.bodyStyle : (req.body.body || existing.bodyStyle || existing.body),
     engine: req.body.engine !== undefined ? req.body.engine : existing.engine,
-    transmission: req.body.transmission || existing.transmission,
+    transmission: req.body.transmission !== undefined ? req.body.transmission : existing.transmission,
     drivetrain: req.body.drivetrain !== undefined ? req.body.drivetrain : existing.drivetrain,
-    fuel: req.body.fuel || existing.fuel,
+    fuel: req.body.fuel !== undefined ? req.body.fuel : existing.fuel,
     mileage: parseInt(req.body.mileage) || existing.mileage,
     price: parseInt(req.body.price) || existing.price,
     costPrice: parseInt(req.body.costPrice) || existing.costPrice || 0,
-    featured: req.body.featured === 'true' || req.body.featured === 'on'
+    featured: req.body.featured === 'true' || req.body.featured === 'on' || req.body.featured === true
   };
   writeCars(data);
   if (req.body.status && req.body.status === 'sold' && existing.status !== 'sold') {
-    logActivity('sale', `<strong>${data.cars[idx].year} ${data.cars[idx].make} ${data.cars[idx].model}</strong> marked as Sold`);
+    logActivity('sale', `<strong>${esc(data.cars[idx].year)} ${esc(data.cars[idx].make)} ${esc(data.cars[idx].model)}</strong> marked as Sold`);
   } else {
-    logActivity('car', `<strong>${data.cars[idx].year} ${data.cars[idx].make} ${data.cars[idx].model}</strong> updated`);
+    logActivity('car', `<strong>${esc(data.cars[idx].year)} ${esc(data.cars[idx].make)} ${esc(data.cars[idx].model)}</strong> updated`);
   }
   res.json({ car: data.cars[idx] });
 });
@@ -239,7 +255,7 @@ app.delete('/api/cars/:id', requireAdmin, (req, res) => {
 
   const [removed] = data.cars.splice(idx, 1);
   writeCars(data);
-  logActivity('car', `<strong>${removed.year} ${removed.make} ${removed.model}</strong> deleted from inventory`);
+  logActivity('car', `<strong>${esc(removed.year)} ${esc(removed.make)} ${esc(removed.model)}</strong> deleted from inventory`);
 
   if (removed.images) {
     removed.images.forEach(img => {
@@ -276,7 +292,7 @@ app.post('/api/inquiries', (req, res) => {
   };
   data.inquiries.push(inquiry);
   writeInquiries(data);
-  logActivity('lead', `New inquiry from <strong>${inquiry.name}</strong> — ${inquiry.subject}`);
+  logActivity('lead', `New inquiry from <strong>${esc(inquiry.name)}</strong> — ${esc(inquiry.subject)}`);
   res.status(201).json({ ...inquiry });
 });
 
@@ -319,6 +335,7 @@ function readTradeIns() {
   } catch { return { tradeIns: [] }; }
 }
 function writeTradeIns(data) {
+  ensureDir(TRADE_FILE);
   fs.writeFileSync(TRADE_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -340,7 +357,7 @@ app.post('/api/trade-ins', (req, res) => {
   };
   data.tradeIns.push(entry);
   writeTradeIns(data);
-  logActivity('tradein', `Trade-in request from <strong>${entry.name}</strong> — ${entry.year} ${entry.make} ${entry.model}`);
+  logActivity('tradein', `Trade-in request from <strong>${esc(entry.name)}</strong> — ${esc(entry.year)} ${esc(entry.make)} ${esc(entry.model)}`);
   res.status(201).json({ ...entry });
 });
 
@@ -368,6 +385,7 @@ function readReviews() {
   } catch { return { reviews: [] }; }
 }
 function writeReviews(data) {
+  ensureDir(REVIEW_FILE);
   fs.writeFileSync(REVIEW_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -400,7 +418,7 @@ app.post('/api/reviews', (req, res) => {
   };
   data.reviews.push(review);
   writeReviews(data);
-  logActivity('review', `New review submitted by <strong>${review.name}</strong> (${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)})`);
+  logActivity('review', `New review submitted by <strong>${esc(review.name)}</strong> (${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)})`);
   res.status(201).json({ ...review });
 });
 
@@ -410,7 +428,7 @@ app.put('/api/reviews/:id/approve', requireAdmin, (req, res) => {
   if (!review) return res.status(404).json({ error: 'Review not found' });
   review.approved = true;
   writeReviews(data);
-  logActivity('review', `Review by <strong>${review.name}</strong> approved`);
+  logActivity('review', `Review by <strong>${esc(review.name)}</strong> approved`);
   res.json({ success: true });
 });
 
@@ -424,7 +442,7 @@ app.put('/api/reviews/:id', requireAdmin, (req, res) => {
   if (message !== undefined) review.message = message;
   if (approved !== undefined) review.approved = approved;
   writeReviews(data);
-  logActivity('review', `Review by <strong>${review.name}</strong> updated`);
+  logActivity('review', `Review by <strong>${esc(review.name)}</strong> updated`);
   res.json({ success: true, review });
 });
 
@@ -444,7 +462,7 @@ app.post('/api/reviews/create', requireAdmin, (req, res) => {
   };
   data.reviews.push(review);
   writeReviews(data);
-  logActivity('review', `Review added by admin: <strong>${review.name}</strong> (${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)})`);
+  logActivity('review', `Review added by admin: <strong>${esc(review.name)}</strong> (${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)})`);
   res.status(201).json({ ...review });
 });
 
@@ -466,6 +484,7 @@ function readSales() {
   } catch { return { transactions: [], applications: [] }; }
 }
 function writeSales(data) {
+  ensureDir(SALES_FILE);
   fs.writeFileSync(SALES_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -493,7 +512,7 @@ app.post('/api/sales/transactions', requireAdmin, (req, res) => {
   };
   data.transactions.push(tx);
   writeSales(data);
-  logActivity('sale', `Sale recorded: <strong>${tx.customer}</strong> — KES ${tx.amount.toLocaleString('en-KE')}${tx.vehicle ? ' for ' + tx.vehicle : ''}`);
+  logActivity('sale', `Sale recorded: <strong>${esc(tx.customer)}</strong> — KES ${tx.amount.toLocaleString('en-KE')}${tx.vehicle ? ' for ' + esc(tx.vehicle) : ''}`);
   res.status(201).json({ transaction: tx });
 });
 
@@ -542,7 +561,7 @@ app.post('/api/sales/applications', requireAdmin, (req, res) => {
   };
   data.applications.push(app);
   writeSales(data);
-  logActivity('finance', `Financing application from <strong>${app.customer}</strong> — KES ${app.loanAmount.toLocaleString('en-KE')}`);
+  logActivity('finance', `Financing application from <strong>${esc(app.customer)}</strong> — KES ${app.loanAmount.toLocaleString('en-KE')}`);
   res.status(201).json({ application: app });
 });
 
@@ -671,6 +690,7 @@ function readPosts() {
   } catch { return { posts: [] }; }
 }
 function writePosts(data) {
+  ensureDir(BLOG_FILE);
   fs.writeFileSync(BLOG_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -710,7 +730,7 @@ app.post('/api/posts', requireAdmin, upload.single('image'), (req, res) => {
   };
   data.posts.push(post);
   writePosts(data);
-  logActivity('blog', `Blog post <strong>${post.title}</strong> ${post.published ? 'published' : 'saved as draft'}`);
+  logActivity('blog', `Blog post <strong>${esc(post.title)}</strong> ${post.published ? 'published' : 'saved as draft'}`);
   res.status(201).json({ post });
 });
 
@@ -755,6 +775,7 @@ function readCustomers() {
   } catch { return { customers: [] }; }
 }
 function writeCustomers(data) {
+  ensureDir(CUSTOMER_FILE);
   fs.writeFileSync(CUSTOMER_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -797,7 +818,7 @@ app.post('/api/customers', requireAdmin, (req, res) => {
   };
   data.customers.push(customer);
   writeCustomers(data);
-  logActivity('lead', `New customer added: <strong>${customer.name}</strong>`);
+  logActivity('lead', `New customer added: <strong>${esc(customer.name)}</strong>`);
   res.status(201).json({ customer });
 });
 
@@ -834,6 +855,7 @@ function readSettings() {
   }
 }
 function writeSettings(data) {
+  ensureDir(SETTINGS_FILE);
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
@@ -889,6 +911,7 @@ function readProfile() {
   }
 }
 function writeProfile(data) {
+  ensureDir(PROFILE_FILE);
   fs.writeFileSync(PROFILE_FILE, JSON.stringify(data, null, 2));
 }
 
@@ -982,6 +1005,17 @@ app.post('/api/upload/image', requireAdmin, upload.single('image'), (req, res) =
 });
 
 app.use((req, res) => { res.status(404).send('Not found'); });
+
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err.message || err);
+  if (err.code === 'LIMIT_FILE_SIZE') return res.status(413).json({ error: 'File too large. Max 5MB per image.' });
+  if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+    if (err.field === 'images') return res.status(400).json({ error: 'Maximum 10 images allowed.' });
+    return res.status(400).json({ error: 'Unexpected file field: ' + err.field });
+  }
+  if (err instanceof multer.MulterError) return res.status(400).json({ error: err.message });
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 const server = app.listen(PORT, '::', () => {
   console.log(`Server running at http://localhost:${PORT}`);

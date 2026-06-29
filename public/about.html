@@ -58,9 +58,9 @@
   <div class="container">
     <div class="about-story">
       <div class="about-image">
-        <img src="https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=600&q=80" alt="Premium car interior" style="width:100%;">
+        <img id="aboutHeroImage" src="https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=600&q=80" alt="Premium car interior" style="width:100%;">
       </div>
-      <div class="about-text">
+      <div class="about-text" id="aboutContent">
         <h2>Our Story</h2>
         <p>Japan Link Motors LTD MSA was founded with a simple mission — to bring the best of automotive engineering to the Kenyan market with transparency, integrity, and exceptional service.</p>
         <p>Based on Moi Avenue in the heart of Mombasa, we have grown from a small dealership into one of the Coast region's most trusted names for imported vehicles. Over the past decade, we have helped thousands of Kenyans find their perfect car, from fuel-efficient hatchbacks for city driving to rugged 4x4s for off-road adventures.</p>
@@ -75,11 +75,11 @@
     <div class="mission-vision">
       <div class="mv-card">
         <h3>Our Mission</h3>
-        <p>To provide every Kenyan with access to high-quality, reliable vehicles at fair prices, backed by professional service and unwavering integrity. We strive to make the car buying experience transparent, simple, and enjoyable.</p>
+        <p id="aboutMission">To provide every Kenyan with access to high-quality, reliable vehicles at fair prices, backed by professional service and unwavering integrity. We strive to make the car buying experience transparent, simple, and enjoyable.</p>
       </div>
       <div class="mv-card">
         <h3>Our Vision</h3>
-        <p>To be Kenya's most trusted automotive brand — recognized for quality, transparency, and customer satisfaction in every vehicle we sell and every relationship we build.</p>
+        <p id="aboutVision">To be Kenya's most trusted automotive brand — recognized for quality, transparency, and customer satisfaction in every vehicle we sell and every relationship we build.</p>
       </div>
     </div>
   </div>
@@ -247,21 +247,42 @@
 </a>
 <script src="js/main.js"></script>
 <script>
-(async function loadTeam() {
+(async function loadAbout() {
   try {
     var res = await fetch('/api/profile');
     var data = await res.json();
+    var about = data.about || {};
+
+    // Hero image
+    var heroImg = document.getElementById('aboutHeroImage');
+    if (heroImg && about.heroImage) heroImg.src = about.heroImage;
+
+    // Mission
+    var missionEl = document.getElementById('aboutMission');
+    if (missionEl && about.mission) missionEl.textContent = about.mission;
+
+    // Vision
+    var visionEl = document.getElementById('aboutVision');
+    if (visionEl && about.vision) visionEl.textContent = about.vision;
+
+    // About content (Our Story)
+    var contentEl = document.getElementById('aboutContent');
+    if (contentEl && about.content) contentEl.innerHTML = about.content;
+
+    // Team
     var team = (data.team || data.profile?.team) || [];
     var grid = document.getElementById('teamGrid');
-    if (!team.length) {
-      grid.innerHTML = '<div style="text-align:center;padding:40px 0;color:#888;">Meet our team soon.</div>';
-      return;
+    if (grid) {
+      if (!team.length) {
+        grid.innerHTML = '<div style="text-align:center;padding:40px 0;color:#888;">Meet our team soon.</div>';
+      } else {
+        grid.innerHTML = team.map(function(m) {
+          var initials = (m.name || '').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase() || '?';
+          var imgHtml = m.image ? '<img src="' + m.image + '" alt="' + m.name + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:10px;">' : '<div class="team-avatar">' + initials + '</div>';
+          return '<div class="team-card">' + imgHtml + '<h4>' + (m.name || '') + '</h4><p>' + (m.title || '') + '</p>' + (m.bio ? '<p style="font-size:0.82rem;color:var(--text-light);">' + m.bio + '</p>' : '') + '</div>';
+        }).join('');
+      }
     }
-    grid.innerHTML = team.map(function(m) {
-      var initials = (m.name || '').split(' ').map(function(w){ return w[0]; }).join('').toUpperCase() || '?';
-      var imgHtml = m.image ? '<img src="' + m.image + '" alt="' + m.name + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:10px;">' : '<div class="team-avatar">' + initials + '</div>';
-      return '<div class="team-card">' + imgHtml + '<h4>' + (m.name || '') + '</h4><p>' + (m.title || '') + '</p>' + (m.bio ? '<p style="font-size:0.82rem;color:var(--text-light);">' + m.bio + '</p>' : '') + '</div>';
-    }).join('');
   } catch(e) {
     var g = document.getElementById('teamGrid');
     if(g) g.innerHTML = '<div style="text-align:center;padding:40px 0;color:#888;">Could not load team.</div>';
