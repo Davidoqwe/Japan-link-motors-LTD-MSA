@@ -983,7 +983,7 @@ app.post('/api/upload/image', requireAdmin, upload.single('image'), (req, res) =
 
 app.use((req, res) => { res.status(404).send('Not found'); });
 
-const server = app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '::', () => {
   console.log(`Server running at http://localhost:${PORT}`);
   console.log(`Admin panel: http://localhost:${PORT}/admin/login.html`);
   console.log('Japan Link Motors LTD MSA - Your Trusted Car Dealer');

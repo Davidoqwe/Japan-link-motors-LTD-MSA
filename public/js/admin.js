@@ -244,6 +244,10 @@ function onFilterChange() {
   renderInventory();
 }
 
+function toggleMobileFilter() {
+  document.getElementById('invFilterSidebar').classList.toggle('open');
+}
+
 function clearAllFilters() {
   invFilters = { status: 'all', condition: 'all', make: 'all', yearFrom: '', yearTo: '', priceFrom: '', priceTo: '' };
   document.getElementById('filterMake').value = 'all';

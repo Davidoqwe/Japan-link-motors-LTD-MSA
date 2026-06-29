@@ -158,7 +158,8 @@
           <span class="inv-search-icon">&#128269;</span>
           <input type="text" id="invSearch" placeholder="Search by VIN, Make, Model..." oninput="debounceSearch()">
         </div>
-        <div class="inv-control-actions">
+          <div class="inv-control-actions">
+          <button class="inv-filter-toggle-mobile" onclick="toggleMobileFilter()">&#9776; Filters</button>
           <button class="btn-admin btn-admin-outline btn-admin-sm" onclick="exportCSV()">&#8595; Export CSV</button>
           <div class="inv-view-toggle" id="invViewToggle">
             <button class="view-btn active" data-view="table" onclick="setInventoryView('table')" title="Table View">&#9776;</button>

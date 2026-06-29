@@ -7,6 +7,30 @@
       "message": "⭐⭐⭐⭐⭐ 5/5 Stars\n\nI had an excellent experience purchasing my car from this dealership. The staff were friendly, professional, and very knowledgeable about the vehicles they had available. They took the time to answer all my questions and helped me find a car that fit both my needs and budget.\n\nThe entire buying process was smooth, transparent, and stress-free. I appreciated their honesty, fair pricing, and commitment to customer satisfaction. The vehicle was clean, well-maintained, and exactly as described.\n\nI would highly recommend this dealership to anyone looking for a reliable vehicle and outstanding customer service. I will definitely return for future purchases and recommend them to my friends and family.\n",
       "approved": true,
       "createdAt": "2026-06-21T18:54:14.707Z"
+    },
+    {
+      "id": "8128798a-c55a-450b-9709-44278887bf30",
+      "name": "Admin",
+      "rating": 4,
+      "message": "Auto-generated",
+      "approved": true,
+      "createdAt": "2026-06-29T07:03:06.683Z"
+    },
+    {
+      "id": "855658a2-4b58-46b2-98f1-27089cbd009d",
+      "name": "Admin",
+      "rating": 4,
+      "message": "Auto-generated",
+      "approved": true,
+      "createdAt": "2026-06-29T07:03:28.179Z"
+    },
+    {
+      "id": "65d072a8-1ceb-4742-9fb3-a37c85db07e1",
+      "name": "Admin",
+      "rating": 4,
+      "message": "Auto-generated",
+      "approved": true,
+      "createdAt": "2026-06-29T07:04:46.721Z"
     }
   ]
 }

@@ -826,6 +826,27 @@
   height: 100%;
   object-fit: cover;
 }
+.image-preview-area .remove-img {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: var(--admin-danger);
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  padding: 0;
+  font-family: inherit;
+}
 
 /* EMPTY STATE */
 .empty-state {
@@ -1359,6 +1380,35 @@
   .drawer-header { padding: 16px 18px; }
   .drawer-body { padding: 16px 18px; }
   .drawer-footer { padding: 14px 18px; }
+  .quick-actions-dropdown { right: auto; left: 0; }
+}
+@media (max-width: 480px) {
+  .drawer-header { padding: 12px 14px; }
+  .drawer-body { padding: 12px 14px; }
+  .drawer-footer { padding: 10px 14px; flex-direction: column; }
+  .drawer-footer .btn-admin { width: 100%; justify-content: center; }
+  .file-drop-zone { padding: 16px; }
+  .drop-zone-content .drop-icon { font-size: 1.6rem; }
+  .drop-zone-content p { font-size: 0.8rem; }
+  .image-preview-area .preview-item { width: 60px; height: 46px; }
+  .image-preview-area .remove-img { width: 20px; height: 20px; top: -5px; right: -5px; font-size: 0.7rem; }
+  .inv-filter-sidebar { padding: 12px; }
+  .pagination-btns button:first-child,
+  .pagination-btns button:last-child { display: none; }
+}
+@media (max-width: 360px) {
+  .drawer-body { padding: 8px 10px; }
+  .drawer-header { padding: 8px 10px; }
+  .drawer-section { margin-bottom: 14px; padding-bottom: 12px; }
+  .drawer-section-title { font-size: 0.8rem; }
+  .form-group { margin-bottom: 10px; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { padding: 8px 10px; font-size: 0.8rem; }
+  .file-drop-zone { padding: 10px; }
+  .drop-zone-content .drop-icon { font-size: 1.3rem; margin-bottom: 4px; }
+  .pagination-btns button:nth-child(3),
+  .pagination-btns button:nth-child(7) { display: none; }
 }
 
 /* LEAD STATUS DROPDOWN */
